@@ -1,5 +1,5 @@
 //========================================================//
-//  tournament.c                                          //
+//  tournament.h                                          //
 //  predictor definitions for tournament predictor        //
 //                                                        //
 //  Includes function prototypes and global predictor     //
@@ -88,7 +88,7 @@ get_tchooser_count() {
 }
 
 uint8_t
-tournament_global_predict(uint32_t pc) {
+tournament_global_predict() {
     size_t take = tgpred[tghistory];
     return thresholding(take);
 }
