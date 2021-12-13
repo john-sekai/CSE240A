@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include "predictor.h"
 #include "tournament.h"
-// #include "custom.h"
+#include "custom.h"
 
 //
 // TODO:Student Information
@@ -50,6 +50,16 @@ uint8_t* tchooser;
 uint32_t tghistory;   // history stored in big-endian
 
 
+// ==========================
+// tournament data structures
+// ==========================
+// tournament tables
+uint32_t* clhistory;  // tournament local history table
+uint8_t* clpred;  // tournament local predictor (counter)
+uint8_t* cgpred;  // counter for global branch pattern
+uint8_t* cchooser;
+uint32_t cghistory;   // history stored in big-endian
+
 //------------------------------------//
 //        Predictor Functions         //
 //------------------------------------//
@@ -65,7 +75,8 @@ init_predictor()
 
   // tournament initialization
   init_tournament();
-
+  
+  init_custom();
 
 }
 
@@ -88,6 +99,7 @@ make_prediction(uint32_t pc)
     case TOURNAMENT:
       return tournament_make_prediction(pc);
     case CUSTOM:
+      return custom_make_prediction(pc); 
     default:
       break;
   }
@@ -111,7 +123,9 @@ train_predictor(uint32_t pc, uint8_t outcome)
   case TOURNAMENT:
     tournament_train(pc, outcome);
     break;
-  
+  case CUSTOM:
+    custom_train(pc, outcome);
+    break;
   default:
     break;
   }
