@@ -7,6 +7,7 @@
 //========================================================//
 #include <stdio.h>
 #include "predictor.h"
+#include "tournament.h"
 
 //
 // TODO:Student Information
@@ -37,6 +38,16 @@ int verbose;
 //TODO: Add your own Branch Predictor data structures here
 //
 
+// ==========================
+// tournament data structures
+// ==========================
+// tournament tables
+uint32_t* tlhistory;  // tournament local history table
+uint8_t* tlpred;  // tournament local predictor (counter)
+uint8_t* tgpred;  // counter for global branch pattern
+uint8_t* tchooser;
+uint32_t tghistory;   // history stored in big-endian
+
 
 //------------------------------------//
 //        Predictor Functions         //
@@ -50,6 +61,11 @@ init_predictor()
   //
   //TODO: Initialize Branch Predictor Data Structures
   //
+
+  // tournament initialization
+  init_tournament();
+
+
 }
 
 // Make a prediction for conditional branch instruction at PC 'pc'
@@ -69,6 +85,7 @@ make_prediction(uint32_t pc)
       return TAKEN;
     case GSHARE:
     case TOURNAMENT:
+      return tournament_make_prediction(pc);
     case CUSTOM:
     default:
       break;
@@ -88,4 +105,13 @@ train_predictor(uint32_t pc, uint8_t outcome)
   //
   //TODO: Implement Predictor training
   //
+  switch (bpType)
+  {
+  case TOURNAMENT:
+    tournament_train(pc, outcome);
+    break;
+  
+  default:
+    break;
+  }
 }
